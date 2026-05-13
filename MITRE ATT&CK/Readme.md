@@ -147,14 +147,10 @@ The rules were tested using:
 
 ---
 
-## 📸 Screenshots (Recommended)
+## 📸 Screenshots 
 
+![Alert](https://github.com/Bala3699/suricata-mitre-detection-rules/blob/main/MITRE%20ATT%26CK/Pic/WhatsApp%20Image%202026-05-13%20at%2011.34.29%20AM.jpeg)
 
-
-* Suricata alert logs
-* Terminal output of rule triggers
-* Wireshark packet captures
-* MITRE-mapped alert examples
 
 ---
 
