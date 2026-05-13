@@ -149,7 +149,7 @@ The rules were tested using:
 
 ## 📸 Screenshots (Recommended)
 
-Add the following in `/screenshots/`:
+
 
 * Suricata alert logs
 * Terminal output of rule triggers
