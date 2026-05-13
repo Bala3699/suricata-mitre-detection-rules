@@ -150,8 +150,8 @@ The rules were tested using:
 ## 📸 Screenshots 
 
 ![Alert](https://github.com/Bala3699/suricata-mitre-detection-rules/blob/main/MITRE%20ATT%26CK/Pic/WhatsApp%20Image%202026-05-13%20at%2011.34.29%20AM.jpeg)
-
-
+![Alert2](https://github.com/Bala3699/suricata-mitre-detection-rules/blob/main/MITRE%20ATT%26CK/Pic/WhatsApp%20Image%202026-05-13%20at%2011.34.38%20AM.jpeg)
+![Aler3](https://github.com/Bala3699/suricata-mitre-detection-rules/blob/main/MITRE%20ATT%26CK/Pic/asdf.jpeg)
 ---
 
 ## 📚 Learning Outcomes
