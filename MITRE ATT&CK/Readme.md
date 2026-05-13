@@ -234,17 +234,4 @@ This project demonstrates practical skills in:
 
 ---
 
-```
 
----
-
-## 🔥 If you want next upgrade
-
-I can also help you:
-
-- make a **GitHub banner image (professional SOC style)**
-- write a **viral LinkedIn post for this exact repo**
-- or optimize it for **resume ATS scoring (SOC Engineer roles)**
-
-Just tell me 👍
-```
