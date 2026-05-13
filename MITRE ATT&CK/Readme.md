@@ -59,8 +59,9 @@ suricata-mitre-detection-rules/
 ├── rules/
 │   └── mitre.rules        # All Suricata detection rules
 │
-├── scripts/
-│   └── alert.sh           # Traffic simulation / trigger scripts (optional)
+── Alert/
+│   ├── alert.sh           # Traffic simulation / trigger scripts (optional)
+│   └── attack_simulation.sh # Script for executing specific attack techniques
 │
 ├── logs/
 │   └── suricata.log       # Generated alert logs
