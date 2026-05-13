@@ -207,8 +207,23 @@ This project was built as a blue-team focused adversary simulation lab, helping 
 
 Attack simulation ↔ Detection engineering ↔ SOC operations
 
-### 📷 Recommended Screenshots
+### 📷 Screenshots
+### 💣 Attack
 
+<br>
+
+![trigger](https://github.com/Bala3699/suricata-mitre-detection-rules/blob/main/MITRE%20ATT%26CK/Pic/WhatsApp%20Image%202026-05-13%20at%2011.43.04%20AM.jpeg)
+
+<br>
+
+### 🚨 Alert
+
+<br>
+
+![trigger1](https://github.com/Bala3699/suricata-mitre-detection-rules/blob/main/MITRE%20ATT%26CK/Pic/WhatsApp%20Image%202026-05-13%20at%2011.43.11%20AM.jpeg)
+![trigger2](https://github.com/Bala3699/suricata-mitre-detection-rules/blob/main/MITRE%20ATT%26CK/Pic/WhatsApp%20Image%202026-05-13%20at%2011.43.18%20AM.jpeg)
+
+<br>
 
 ### 🏁 Conclusion
 
